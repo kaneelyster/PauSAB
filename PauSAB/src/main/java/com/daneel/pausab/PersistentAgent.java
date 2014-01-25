@@ -113,7 +113,7 @@ public class PersistentAgent extends Service {
 
             URL url;
             try{
-                String statusFeed = "";
+                String statusFeed = "URL HERE";
                 url = new URL(statusFeed);
 
                 URLConnection connection;
