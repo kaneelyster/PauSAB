@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -72,25 +74,30 @@ public class PersistentAgent extends Service {
     public void createNotification(String statusText) {
         // Prepare intent which is triggered if the
         // notification is selected
-        Intent intent = new Intent(this, NotificationReceiverActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        Intent tweetIntent = new Intent();
-        PendingIntent pTweetIntent = PendingIntent.getActivity(this, 0, tweetIntent, 0);
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        intent.putExtra(getString(R.string.EXTRA_PAUSEDURATION), "5");
+        intent.putExtra(getString(R.string.EXTRA_SERVERIP), "192.168.1.7");
+        intent.putExtra(getString(R.string.EXTRA_SERVERPORT), "8080");
+        intent.putExtra(getString(R.string.EXTRA_SERVERAPIKEY), "6e578e0f2667a0977a72d04c3a340950");
+        //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent, 0);
 
-        //Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sablogo);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sablogosmall96);
         // Build notification
         // Actions are just fake
         Notification notification = new Notification.Builder(this)
-                .setContentTitle("PauSAB")
-                .setContentText(statusText)
+                .setContentTitle(statusText)
+                //.setContentText(statusText)
+                //.setContentInfo("ContentInfo")
                 .setTicker("Notification")
                 .setContentIntent(pIntent)
-                .setSmallIcon(R.drawable.sablogo)
-                //.setLargeIcon(bm)
-                .addAction(R.drawable.ic_launcher, "5 Min", pIntent)
-                .addAction(R.drawable.ic_launcher, "15 Min", pIntent)
-                .addAction(R.drawable.ic_launcher, "30 Min", pIntent)
+                .setSmallIcon(R.drawable.sablogosmall)
+                .setLargeIcon(bm)
+                .addAction(R.drawable.pausebmp32, "5 Min", pIntent)
+                .addAction(R.drawable.pausebmp32, "15 Min", pIntent)
+                .addAction(R.drawable.pausebmp32, "30 Min", pIntent)
                 .setOngoing(true)
+                .setWhen(System.currentTimeMillis())
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // Hide the notification after its selected
@@ -113,11 +120,11 @@ public class PersistentAgent extends Service {
 
             URL url;
             try{
-                String statusFeed = "URL HERE";
-                url = new URL(statusFeed);
+                    String statusFeed = getString(R.string.SERVERADDRESS);
+                    url = new URL(statusFeed);
 
-                URLConnection connection;
-                connection = url.openConnection();
+                    URLConnection connection;
+                    connection = url.openConnection();
 
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
                 int responseCode = httpConnection.getResponseCode();
@@ -163,5 +170,4 @@ public class PersistentAgent extends Service {
             //return "nothing";
         }
     }
-
 }

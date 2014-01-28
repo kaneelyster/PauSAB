@@ -16,6 +16,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -50,8 +52,24 @@ public class MainActivity extends Activity {
 
     public void test(View view){
         //refreshDownloadStatus();
-        Toast.makeText(this, "No testing yet", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "No testing yet", Toast.LENGTH_LONG).show();
+        testDownloadPause();
     }
+
+    public void testDownloadPause(){
+        String statusText="";
+        pauseDownloads status = new pauseDownloads();
+        try {
+            statusText = status.execute(new String[] {""}).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
+    }
+
+
 
     public void testDowloadStatus(){
         String statusText="";
@@ -86,6 +104,36 @@ public class MainActivity extends Activity {
             return true;
         }
         return false;
+    }
+
+    private class pauseDownloads extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String...  urls) {
+            String statusText;
+            URL url;
+            statusText="";
+            try{
+                String statusFeed = "http://192.168.1.18:8080/api?mode=config&name=set_pause&value=5&apikey=6e578e0f2667a0977a72d04c3a340950";
+                url = new URL(statusFeed);
+
+                URLConnection connection;
+                connection = url.openConnection();
+
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                int responseCode = httpConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK){
+                    statusText="OK";
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return statusText;
+        }
     }
 
     private class refreshDownloadStatus extends AsyncTask<String, Void, String> {
