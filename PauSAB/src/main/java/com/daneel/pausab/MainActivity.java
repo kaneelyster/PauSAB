@@ -41,7 +41,9 @@ public class MainActivity extends Activity {
     // Start the  service
     public void startNewService(View view) {
 
-        startService(new Intent(this, PersistentAgent.class));
+        Intent serviceIntent = new Intent(this, PersistentAgent.class);
+        serviceIntent.putExtra("Action", "Start");
+        startService(serviceIntent);
     }
 
     // Stop the  service
