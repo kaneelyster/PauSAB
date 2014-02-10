@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -36,7 +37,10 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by daneel on 2014/01/13.
  */
 public class PersistentAgent extends Service {
-    public static String EXTRA_PAUSEDURATION = "com.daneel.pausab.PAUSEDURATION";
+
+    public static String ACTION_DURATION1 = "com.daneel.pausab.DURATION1";
+    public static String ACTION_DURATION2 = "com.daneel.pausab.DURATION2";
+    public static String ACTION_DURATION3 = "com.daneel.pausab.DURATION3";
     public static String EXTRA_NOTIFICATIONACTION = "com.daneel.pausab.NOTIFICATIONACTION";
     public Preferences preferences;
 
@@ -50,7 +54,16 @@ public class PersistentAgent extends Service {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             if (bundle.getString("Pause") != null){
-                pauseDownloads();
+                String action = bundle.getString("Pause");
+                if (action.equals(ACTION_DURATION1)){
+                    pauseDownloads(preferences.getDuration1());
+                }
+                else if (action.equals(ACTION_DURATION2)){
+                    pauseDownloads(preferences.getDuration2());
+                }
+                else if (action.equals(ACTION_DURATION3)){
+                    pauseDownloads(preferences.getDuration3());
+                }
             }
             else if (bundle.getString("Action").equals("Start")) {
                 refreshDownloadStatus status = new refreshDownloadStatus();
@@ -83,26 +96,42 @@ public class PersistentAgent extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
+
+    /** method for clients */
+    public void pauseDownloads(int duration) {
+        String statusText="";
+        DownloadPause status = new DownloadPause();
+        try {
+            statusText = status.execute(String.valueOf(duration)).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
+    }
+
+
 
     public void createNotification(String statusText) {
         // Prepare intents which are triggered if the notification is selected
 
         Intent mainIntent = new Intent(this, MyBroadcastReceiver.class);
-        mainIntent.putExtra(PersistentAgent.EXTRA_NOTIFICATIONACTION, "MainActivity");
+        mainIntent.setAction(EXTRA_NOTIFICATIONACTION);
         PendingIntent pMainIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, mainIntent, 0);
 
         Intent pauseIntent1 = new Intent(this, MyBroadcastReceiver.class);
-        pauseIntent1.putExtra(PersistentAgent.EXTRA_PAUSEDURATION, "5");
+        pauseIntent1.setAction(ACTION_DURATION1);
         PendingIntent pIntent1 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent1, 0);
 
-        Intent pauseIintent2 = new Intent(this, MyBroadcastReceiver.class);
-        pauseIintent2.putExtra(PersistentAgent.EXTRA_PAUSEDURATION, "15");
-        PendingIntent pIntent2 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIintent2, 0);
+        Intent pauseIntent2 = new Intent(this, MyBroadcastReceiver.class);
+        pauseIntent2.setAction(ACTION_DURATION2);
+        PendingIntent pIntent2 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent2, 0);
 
         Intent pauseIntent3 = new Intent(this, MyBroadcastReceiver.class);
-        pauseIntent3.putExtra(PersistentAgent.EXTRA_PAUSEDURATION, "30");
+        pauseIntent3.setAction(ACTION_DURATION3);
         PendingIntent pIntent3 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent3, 0);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sablogosmall96);
@@ -131,18 +160,7 @@ public class PersistentAgent extends Service {
 
         notificationManager.notify(0, notification);
     }
-    public void pauseDownloads(){
-        String statusText="";
-        DownloadPause status = new DownloadPause();
-        try {
-            statusText = status.execute(new String[] {""}).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
-    }
+
 
     private class DownloadPause extends AsyncTask<String, Void, String> {
 
@@ -150,7 +168,7 @@ public class PersistentAgent extends Service {
         protected String doInBackground(String...  urls) {
             String statusText;
             URL url;
-            String pauseDuration = "5";
+            String pauseDuration = urls[0];
             statusText="";
             try{
                 String statusFeed = "http://"+
