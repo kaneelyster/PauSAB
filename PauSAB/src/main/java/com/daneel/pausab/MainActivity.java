@@ -32,6 +32,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends Activity {
 
+    //TODO: Make sharedpreferences/settings page
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

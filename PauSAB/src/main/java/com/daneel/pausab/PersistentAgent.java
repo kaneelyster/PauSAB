@@ -64,6 +64,8 @@ public class PersistentAgent extends Service {
                 else if (action.equals(ACTION_DURATION3)){
                     pauseDownloads(preferences.getDuration3());
                 }
+                //TODO: Check flow/handling on clicks + send to config screen on main notification intent click
+
             }
             else if (bundle.getString("Action").equals("Start")) {
                 refreshDownloadStatus status = new refreshDownloadStatus();

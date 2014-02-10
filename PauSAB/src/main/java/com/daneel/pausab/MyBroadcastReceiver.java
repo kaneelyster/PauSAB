@@ -12,7 +12,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String msg = "Broadcast Received, must start activity";
+        //String msg = "Broadcast Received, must start activity";
         String action = intent.getAction();
 
 //        Toast.makeText(context, msg + " " + action, Toast.LENGTH_SHORT).show();
