@@ -32,9 +32,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends Activity {
 
-    private static final int SHOW_PREFERENCES = 1;
-    //TODO: Make sharedpreferences/settings page
+    //TODO: Expand SharedPreferences fragment.
 
+    private static final int SHOW_PREFERENCES = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,13 +208,12 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                //startActivity(new Intent(this, SettingsActivity.class));
                 Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
                 Intent i = new Intent(this, c);
                 startActivityForResult(i, SHOW_PREFERENCES);
                 return true;
             case R.id.action_exit:
-                // Exit option clicked.
+                //TODO: Exit ActionBar item clicked.
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
