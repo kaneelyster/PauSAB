@@ -9,5 +9,6 @@
     <string name="EXTRA_SERVERIP">com.daneel.pausab.SERVERIP</string>
     <string name="EXTRA_SERVERPORT">com.daneel.pausab.SERVERPORT</string>
     <string name="EXTRA_SERVERAPIKEY">com.daneel.pausab.SERVERAPIKEY</string>
+    <string name="action_exit">Exit</string>
 </resources>
 
