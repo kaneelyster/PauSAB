@@ -5,20 +5,71 @@
         android:title="Server Settings">
         <EditTextPreference
             android:key="PREF_SERVER_IP"
+            android:inputType="textUri"
             android:title="Server IP"
-            android:summary="Four-part server IP"
+            android:summary="SABnzbd web server IP"
             android:defaultValue="192.168.0.1"/>
+
+        <EditTextPreference
+            android:key="PREF_SERVER_PORT"
+            android:inputType="number"
+            android:title="Server Port"
+            android:summary="SABnzbd web server port number"
+            android:defaultValue="8080"/>
+
+        <EditTextPreference
+            android:key="PREF_SERVER_USER"
+            android:title="SAB Username"
+            android:summary="SABnzbd web server username"
+            android:defaultValue=""/>
+
+        <EditTextPreference
+            android:key="PREF_SERVER_PASS"
+            android:inputType="textPassword"
+            android:title="SAB Password"
+            android:summary="SABnzbd web server password"
+            android:defaultValue=""/>
+
+        <EditTextPreference
+            android:key="PREF_API_KEY"
+            android:title="SAB API Key"
+            android:summary="SABnzbd web server API key"
+            android:defaultValue=""/>
+
+        <Preference
+            android:key="PREF_GET_API_KEY"
+            android:title="Get API Key"
+            android:summary="Load SAB web interface to find API key.  Requires IP+port+user+pass" >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.example.com" />
+        </Preference>
+
+        />
 
     </PreferenceCategory>
     <PreferenceCategory
         android:title="User Settings">
 
-        <ListPreference
-            android:entries="@array/listOptions"
-            android:entryValues="@array/listValues"
+        <EditTextPreference
             android:key="PREF_PAUSE_DURATION1"
-            android:summary="Duration of first pause button"
-            android:title="List preference" />
+            android:inputType="number"
+            android:title="Pause Duration 1"
+            android:summary="Duration of first notification pause button"
+            android:defaultValue="5"/>
+
+        <EditTextPreference
+            android:key="PREF_PAUSE_DURATION2"
+            android:inputType="number"
+            android:title="Pause Duration 2"
+            android:summary="Duration of second notification pause button"
+            android:defaultValue="15"/>
+
+        <EditTextPreference
+            android:key="PREF_PAUSE_DURATION3"
+            android:inputType="number"
+            android:title="Pause Duration 3"
+            android:summary="Duration of third notification pause button"
+            android:defaultValue="30"/>
 
     </PreferenceCategory>
 

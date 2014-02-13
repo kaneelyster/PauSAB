@@ -3,9 +3,9 @@ package com.daneel.pausab;
 /**
  * Created by daneel on 2014/01/30.
  */
-public class Preferences {
+public class PreferencesStore {
 
-    public Preferences() {
+    public PreferencesStore() {
         this.SERVER_IP = "192.168.1.7";
         this.SERVER_PORT = "8080";
         this.API_KEY = "6e578e0f2667a0977a72d04c3a340950";

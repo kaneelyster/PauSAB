@@ -4,13 +4,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -26,7 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,14 +38,14 @@ public class PersistentAgent extends Service {
     public static String ACTION_DURATION2 = "com.daneel.pausab.DURATION2";
     public static String ACTION_DURATION3 = "com.daneel.pausab.DURATION3";
     public static String EXTRA_NOTIFICATIONACTION = "com.daneel.pausab.NOTIFICATIONACTION";
-    public Preferences preferences;
+    public PreferencesStore preferences;
 
     public PersistentAgent() {
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        preferences = new Preferences();
+        preferences = new PreferencesStore();
         String statusText = "";
         Bundle bundle = intent.getExtras();
         if (bundle != null) {

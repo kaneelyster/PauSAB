@@ -32,7 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends Activity {
 
-    //TODO: Expand SharedPreferences fragment.
+    //TODO: Implement SharedPreferences getters/setters for
 
     private static final int SHOW_PREFERENCES = 1;
 
