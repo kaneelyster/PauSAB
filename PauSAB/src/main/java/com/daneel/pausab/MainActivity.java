@@ -32,6 +32,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends Activity {
 
+    public PreferencesStore preferences;
+
     //TODO: Implement SharedPreferences getters/setters for
 
     private static final int SHOW_PREFERENCES = 1;
@@ -40,6 +42,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferences = PreferencesStore.getInstance(getApplicationContext());
+
+
     }
 
     // Start the  service

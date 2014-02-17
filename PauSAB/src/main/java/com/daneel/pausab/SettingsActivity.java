@@ -1,10 +1,13 @@
 package com.daneel.pausab;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.List;
 
@@ -16,8 +19,6 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String KEY_PREF_PAUSE_DURATION1 = "PREF_PAUSE_DURATION1";
     public static final String KEY_PREF_PAUSE_DURATION2 = "PREF_PAUSE_DURATION2";
     public static final String KEY_PREF_PAUSE_DURATION3 = "PREF_PAUSE_DURATION3";
-
-
 
     @Override
     public void onBuildHeaders(List<Header> target){
@@ -32,8 +33,6 @@ public class SettingsActivity extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preference_screen);
 
-            Preference serverIPPref = findPreference(KEY_PREF_SERVER_IP);
-            serverIPPref.setSummary("ABC123");
         }
         @Override
         public void onResume(){
