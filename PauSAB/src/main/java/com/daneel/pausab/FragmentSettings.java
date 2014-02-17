@@ -12,9 +12,17 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import java.util.prefs.Preferences;
-
 public class FragmentSettings extends PreferenceActivity {
+
+    public static final String KEY_PREF_SERVER_IP       = "PREF_SERVER_IP";
+    public static final String KEY_PREF_SERVER_PORT     = "PREF_SERVER_PORT";
+    public static final String KEY_PREF_SERVER_USER     = "PREF_SERVER_USER";
+    public static final String KEY_PREF_SERVER_PASS     = "PREF_SERVER_PASS";
+    public static final String KEY_PREF_API_KEY         = "PREF_API_KEY";
+    public static final String KEY_PREF_GET_API_KEY     = "PREF_GET_API_KEY";
+    public static final String KEY_PREF_PAUSE_DURATION1 = "PREF_PAUSE_DURATION1";
+    public static final String KEY_PREF_PAUSE_DURATION2 = "PREF_PAUSE_DURATION2";
+    public static final String KEY_PREF_PAUSE_DURATION3 = "PREF_PAUSE_DURATION3";
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -26,27 +34,17 @@ public class FragmentSettings extends PreferenceActivity {
 
     public static class SettingsActivityFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener
     {
-        public static final String KEY_PREF_SERVER_IP       = "PREF_SERVER_IP";
-        public static final String KEY_PREF_SERVER_PORT     = "PREF_SERVER_PORT";
-        public static final String KEY_PREF_SERVER_USER     = "PREF_SERVER_USER";
-        public static final String KEY_PREF_SERVER_PASS     = "PREF_SERVER_PASS";
-        public static final String KEY_PREF_API_KEY         = "PREF_API_KEY";
-        public static final String KEY_PREF_GET_API_KEY     = "PREF_GET_API_KEY";
-        public static final String KEY_PREF_PAUSE_DURATION1 = "PREF_PAUSE_DURATION1";
-        public static final String KEY_PREF_PAUSE_DURATION2 = "PREF_PAUSE_DURATION2";
-        public static final String KEY_PREF_PAUSE_DURATION3 = "PREF_PAUSE_DURATION3";
-
         @Override
         public void onCreate(final Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preference_screen);
 
-            Preference myPref = (Preference) findPreference("PREF_GET_API_KEY");
-            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            Preference PrefGetAPIKey = findPreference(KEY_PREF_GET_API_KEY);
+            PrefGetAPIKey.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse("http://www.google.com"));
+                    i.setData(Uri.parse("www.google.com"));
                     startActivity(i);
                     return true;
                 }
@@ -72,8 +70,13 @@ public class FragmentSettings extends PreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(KEY_PREF_SERVER_IP)) {
-                Preference Pref = findPreference(key);
-                Pref.setSummary(sharedPreferences.getString(key, ""));
+                Preference PrefIP = findPreference(key);
+                PrefIP.setSummary(sharedPreferences.getString(key, ""));
+
+                Preference PrefGetAPIKey = findPreference(key);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(sharedPreferences.getString(KEY_PREF_SERVER_IP, "") + ":"+ sharedPreferences.getString(KEY_PREF_SERVER_PORT, "")+"/config/general/"));
+                PrefGetAPIKey.setIntent(i);
             }
             else if (key.equals(KEY_PREF_SERVER_PORT)) {
                 Preference Pref = findPreference(key);

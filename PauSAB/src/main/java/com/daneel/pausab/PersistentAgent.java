@@ -45,7 +45,7 @@ public class PersistentAgent extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        preferences = new PreferencesStore();
+        preferences = PreferencesStore.getInstance(getApplicationContext());
         String statusText = "";
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
@@ -169,15 +169,7 @@ public class PersistentAgent extends Service {
             String pauseDuration = urls[0];
             statusText="";
             try{
-                String statusFeed = "http://"+
-                                    preferences.getSERVER_IP()+
-                                    ":"+
-                                    preferences.getSERVER_PORT()
-                                            +"/api?mode=config&name=set_pause&value="+
-                                    pauseDuration+
-                                    "&apikey="+
-                                    preferences.getAPI_KEY();
-                url = new URL(statusFeed);
+                url = new URL(PreferencesStore.getInstance(getApplicationContext()).getPauseURL(pauseDuration));
 
                 URLConnection connection;
                 connection = url.openConnection();
@@ -193,7 +185,6 @@ public class PersistentAgent extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return statusText;
         }
     }
@@ -205,12 +196,11 @@ public class PersistentAgent extends Service {
             String statusText = "Nothing";
             String speedText = "0 K/s";
             String mbLeftText = "";
-            //Get the XML
 
+            //Get the XML
             URL url;
             try {
-                String statusFeed = getString(R.string.SERVERADDRESS);
-                url = new URL(statusFeed);
+                url = new URL(PreferencesStore.getInstance(getApplicationContext()).getStatusURL());
 
                 URLConnection connection;
                 connection = url.openConnection();
@@ -256,7 +246,6 @@ public class PersistentAgent extends Service {
             }
 
             return statusText + " at " + speedText + "/s | " + mbLeftText + " MB";
-            //return "nothing";
         }
     }
 }

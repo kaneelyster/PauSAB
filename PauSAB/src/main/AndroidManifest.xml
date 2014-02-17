@@ -42,10 +42,6 @@
         <receiver android:name="com.daneel.pausab.MyBroadcastReceiver" >
         </receiver>
 
-        <meta-data
-            android:name="com.daneel.pausab.private"
-            android:value="@string/SERVERADDRESS" />
-
     </application>
 
 </manifest>
