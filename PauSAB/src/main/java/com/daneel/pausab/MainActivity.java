@@ -34,8 +34,6 @@ public class MainActivity extends Activity {
 
     public PreferencesStore preferences;
 
-    //TODO: Implement SharedPreferences getters/setters for
-
     private static final int SHOW_PREFERENCES = 1;
 
     @Override
@@ -44,7 +42,18 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         preferences = PreferencesStore.getInstance(getApplicationContext());
 
+        String action = getIntent().getAction();
 
+        if (action != null) {
+            if (action.equals("com.daneel.pausab.MAINACTIVITY")){
+                showPreferences();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     // Start the  service
@@ -204,7 +213,6 @@ public class MainActivity extends Activity {
         }
 
         return statusText + " at " + speedText + "/s [ETA " + timeleftText + "]";
-        //return "nothing";
         }
     }
 
@@ -213,17 +221,19 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
-                Intent i = new Intent(this, c);
-                startActivityForResult(i, SHOW_PREFERENCES);
+                showPreferences();
                 return true;
             case R.id.action_exit:
-                //TODO: Exit ActionBar item clicked.
+                //TODO: Exit ActionBar item clicked.  Must decide on action to take i.t.o service and notifications
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-
+    public void showPreferences(){
+        Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
+        Intent i = new Intent(this, c);
+        startActivityForResult(i, SHOW_PREFERENCES);
+    }
 }

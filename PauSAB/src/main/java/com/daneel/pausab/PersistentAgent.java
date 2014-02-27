@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,7 +39,7 @@ public class PersistentAgent extends Service {
     public static String ACTION_DURATION1 = "com.daneel.pausab.DURATION1";
     public static String ACTION_DURATION2 = "com.daneel.pausab.DURATION2";
     public static String ACTION_DURATION3 = "com.daneel.pausab.DURATION3";
-    public static String EXTRA_NOTIFICATIONACTION = "com.daneel.pausab.NOTIFICATIONACTION";
+    public static String ACTION_MAINACTIVITY = "com.daneel.pausab.MAINACTIVITY";
     public PreferencesStore preferences;
 
     public PersistentAgent() {
@@ -60,8 +62,6 @@ public class PersistentAgent extends Service {
                 else if (action.equals(ACTION_DURATION3)){
                     pauseDownloads(preferences.getDuration3());
                 }
-                //TODO: Check flow/handling on clicks + send to config screen on main notification intent click
-
             }
             else if (bundle.getString("Action").equals("Start")) {
                 refreshDownloadStatus status = new refreshDownloadStatus();
@@ -90,6 +90,8 @@ public class PersistentAgent extends Service {
     @Override
     public void onDestroy() {
         //Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+        NotificationManager nMgr = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        nMgr.cancel(0);
     }
 
     @Override
@@ -116,9 +118,21 @@ public class PersistentAgent extends Service {
     public void createNotification(String statusText) {
         // Prepare intents which are triggered if the notification is selected
 
-        Intent mainIntent = new Intent(this, MyBroadcastReceiver.class);
-        mainIntent.setAction(EXTRA_NOTIFICATIONACTION);
-        PendingIntent pMainIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, mainIntent, 0);
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        mainIntent.setAction(ACTION_MAINACTIVITY);
+        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(mainIntent);
+
+        //PendingIntent pMainIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, mainIntent, 0);
+        PendingIntent pMainIntent = stackBuilder.getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
         Intent pauseIntent1 = new Intent(this, MyBroadcastReceiver.class);
         pauseIntent1.setAction(ACTION_DURATION1);
@@ -134,9 +148,9 @@ public class PersistentAgent extends Service {
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sablogosmall96);
         // Build notification
-        // Actions are just fake
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(statusText)
+                        //TODO: Refer to http://developer.android.com/guide/topics/ui/notifiers/notifications.html#HandlingNotifications
                         //.setContentText(statusText)
                         //.setContentInfo("ContentInfo")
                 .setTicker("Notification")
@@ -245,7 +259,12 @@ public class PersistentAgent extends Service {
                 e.printStackTrace();
             }
 
-            return statusText + " at " + speedText + "/s | " + mbLeftText + " MB";
+            if (statusText.equals("Paused")){
+                return statusText + " | " + mbLeftText + " MB";
+            }
+            else{
+                return statusText + " at " + speedText + "/s | " + mbLeftText + " MB";
+            }
         }
     }
 }

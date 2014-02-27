@@ -15,7 +15,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         //String msg = "Broadcast Received, must start activity";
         String action = intent.getAction();
 
-//        Toast.makeText(context, msg + " " + action, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, action, Toast.LENGTH_SHORT).show();
 
         Intent serviceIntent = new Intent(context, PersistentAgent.class);
         serviceIntent.putExtra("Pause", action);
