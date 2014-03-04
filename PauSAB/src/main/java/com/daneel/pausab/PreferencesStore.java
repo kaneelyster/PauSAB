@@ -73,4 +73,12 @@ public final class PreferencesStore {
                 "/api?mode=qstatus&output=xml&apikey=" +
                 API_KEY;
     }
+
+    public int getRefreshIntervalMinutes(){
+        return 2;
+    }
+
+    public int getRefreshIntervalSeconds(){
+        return 20;
+    }
 }

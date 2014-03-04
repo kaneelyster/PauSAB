@@ -1,5 +1,6 @@
 package com.daneel.pausab;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -75,6 +77,13 @@ public class PersistentAgent extends Service {
 
                 createNotification(statusText);
 //                return Service.START_STICKY;
+
+                Calendar cal = Calendar.getInstance();
+                Intent alarmIntent = new Intent(this, MyBroadcastReceiver.class);
+                PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+                AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+//                alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalMinutes()*60*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
+                alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
             }
 
         }
@@ -165,10 +174,7 @@ public class PersistentAgent extends Service {
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // Hide the notification after its selected
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        // adding LED lights to notification
-        notification.defaults |= Notification.DEFAULT_LIGHTS;
+        //notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         notificationManager.notify(0, notification);
     }

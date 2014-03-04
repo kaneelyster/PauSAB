@@ -17,8 +17,15 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
 //        Toast.makeText(context, action, Toast.LENGTH_SHORT).show();
 
-        Intent serviceIntent = new Intent(context, PersistentAgent.class);
-        serviceIntent.putExtra("Pause", action);
-        context.startService(serviceIntent);
+        if (action.contains("com.daneel.pausab.DURATION")){
+            Intent serviceIntent = new Intent(context, PersistentAgent.class);
+            serviceIntent.putExtra("Pause", action);
+            context.startService(serviceIntent);
+        }
+        else if (action.contains("Action")){
+            Intent serviceIntent = new Intent(context, PersistentAgent.class);
+            serviceIntent.putExtra("Action", "Start");
+            context.startService(serviceIntent);
+        }
     }
 }
