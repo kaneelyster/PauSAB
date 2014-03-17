@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -23,7 +25,11 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -52,8 +58,9 @@ public class PersistentAgent extends Service {
         preferences = PreferencesStore.getInstance(getApplicationContext());
         String statusText = "";
         Bundle bundle = intent.getExtras();
+        boolean connectivity = testConnectivity();
         if (bundle != null) {
-            if (bundle.getString("Pause") != null){
+            if (bundle.getString("Pause") != null && connectivity){
                 String action = bundle.getString("Pause");
                 if (action.equals(ACTION_DURATION1)){
                     pauseDownloads(preferences.getDuration1());
@@ -66,29 +73,43 @@ public class PersistentAgent extends Service {
                 }
             }
             else if (bundle.getString("Action").equals("Start")) {
-                refreshDownloadStatus status = new refreshDownloadStatus();
-                try {
-                    statusText = status.execute(new String[]{""}).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                if (connectivity){
+                    refreshDownloadStatus status = new refreshDownloadStatus();
+                    try {
+                        statusText = status.execute(new String[]{""}).get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    createNotification(statusText);
+                }
+                else{
+                    clearNotification();
                 }
 
-                createNotification(statusText);
-//                return Service.START_STICKY;
-
-                Calendar cal = Calendar.getInstance();
-                Intent alarmIntent = new Intent(this, MyBroadcastReceiver.class);
-                PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-                AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-//                alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalMinutes()*60*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
-                alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
+                setRecurringAlarm(intent);
             }
-
         }
-
         return Service.START_STICKY;
+    }
+
+    public void setRecurringAlarm(Intent intent) {
+        Calendar cal = Calendar.getInstance();
+        //Intent alarmIntent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        //alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalMinutes()*60*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
+        alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
+
+        preferences.incUpdateCount();
+    }
+
+    public void clearRecurringAlarm(){
+        Intent serviceIntent = new Intent(this, PersistentAgent.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, serviceIntent, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pintent);
     }
 
     @Override
@@ -99,6 +120,11 @@ public class PersistentAgent extends Service {
     @Override
     public void onDestroy() {
         //Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+        clearNotification();
+        clearRecurringAlarm();
+    }
+
+    public void clearNotification() {
         NotificationManager nMgr = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         nMgr.cancel(0);
     }
@@ -122,7 +148,58 @@ public class PersistentAgent extends Service {
         Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
     }
 
+    public boolean testConnectivity(){
+        String statusText="";
+        HostReachability hostStatus = new HostReachability();
+        try {
+            statusText = hostStatus.execute(new String[] {""}).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return statusText.equals(String.valueOf(true));
+    }
 
+    private class HostReachability extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String...  urls) {
+            return String.valueOf(isNetworkOnline() && isServerOnline());
+        }
+    }
+
+    public boolean isServerOnline() {
+        boolean exists = false;
+        PreferencesStore preferences;
+
+        preferences = PreferencesStore.getInstance(getApplicationContext());
+
+        try {
+            InetAddress serverAddr = InetAddress.getByName(preferences.getSERVER_IP());
+            SocketAddress sockaddr = new InetSocketAddress(serverAddr, Integer.decode(preferences.getSERVER_PORT()));
+            // Create an unbound socket
+            Socket sock = new Socket();
+
+            // This method will block no more than timeoutMs.
+            // If the timeout occurs, SocketTimeoutException is thrown.
+            int timeoutMs = 2000;   // 2 seconds
+            sock.connect(sockaddr, timeoutMs);
+            exists = true;
+        }
+        catch (Exception e) {
+        }
+        return exists;
+    }
+
+    public boolean isNetworkOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
 
     public void createNotification(String statusText) {
         // Prepare intents which are triggered if the notification is selected
@@ -213,9 +290,10 @@ public class PersistentAgent extends Service {
 
         @Override
         protected String doInBackground(String... urls) {
-            String statusText = "Nothing";
+            String statusText = "Unreachable";
             String speedText = "0 K/s";
             String mbLeftText = "";
+            String timeLeftText = "";
 
             //Get the XML
             URL url;
@@ -248,6 +326,11 @@ public class PersistentAgent extends Service {
                         Element queue = (Element) nl.item(0);
                         speedText = queue.getTextContent();
                     }
+                    nl = docEle.getElementsByTagName("pause_int");
+                    if (nl != null && nl.getLength() > 0) {
+                        Element queue = (Element) nl.item(0);
+                        timeLeftText = queue.getTextContent();
+                    }
                     nl = docEle.getElementsByTagName("mbleft");
                     if (nl != null && nl.getLength() > 0) {
                         Element queue = (Element) nl.item(0);
@@ -266,10 +349,13 @@ public class PersistentAgent extends Service {
             }
 
             if (statusText.equals("Paused")){
-                return statusText + " | " + mbLeftText + " MB";
+                return "Paused for " + timeLeftText+ " | " + mbLeftText + " MB";
+            }
+            else if (statusText.equals("Downloading") || statusText.equals("IDLE")){
+                return statusText + " at " + speedText + "/s | " + mbLeftText + " MB";
             }
             else{
-                return statusText + " at " + speedText + "/s | " + mbLeftText + " MB";
+                return "Unreachable";
             }
         }
     }

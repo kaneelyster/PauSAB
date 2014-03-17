@@ -13,22 +13,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends Activity {
 
@@ -70,41 +65,87 @@ public class MainActivity extends Activity {
         stopService(new Intent(this, PersistentAgent.class));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                showPreferences();
+                return true;
+            case R.id.action_exit:
+                //TODO: Exit ActionBar item clicked.  Must decide on action to take i.t.o service and notifications
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void showPreferences(){
+        Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
+        Intent i = new Intent(this, c);
+        startActivityForResult(i, SHOW_PREFERENCES);
+    }
+
+//-----------------------------------------------------------------------------------------------------------//
+//--------------------- ALL CODE BELOW THIS IS PURELY FOR TESTING/EXPERIMENTAL PURPOSES ---------------------//
+//-----------------------------------------------------------------------------------------------------------//
+
+
     public void test(View view){
         //refreshDownloadStatus();
         //Toast.makeText(this, "No testing yet", Toast.LENGTH_LONG).show();
-        testDownloadPause();
+        testConnectivity();
     }
 
-    public void testDownloadPause(){
-        String statusText="";
-        pauseDownloads status = new pauseDownloads();
+    public boolean testServerConnectivity() {
+        boolean exists = false;
+        PreferencesStore preferences;
+
+        preferences = PreferencesStore.getInstance(getApplicationContext());
+
         try {
-            statusText = status.execute(new String[] {""}).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            InetAddress serverAddr = InetAddress.getByName(preferences.getSERVER_IP());
+            SocketAddress sockaddr = new InetSocketAddress(serverAddr, Integer.decode(preferences.getSERVER_PORT()));
+            // Create an unbound socket
+            Socket sock = new Socket();
+
+            // This method will block no more than timeoutMs.
+            // If the timeout occurs, SocketTimeoutException is thrown.
+            int timeoutMs = 2000;   // 2 seconds
+            sock.connect(sockaddr, timeoutMs);
+            exists = true;
         }
-        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
-    }
-
-
-
-    public void testDowloadStatus(){
-        String statusText="";
-        refreshDownloadStatus status = new refreshDownloadStatus();
-        try {
-            statusText = status.execute(new String[] {""}).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        catch (Exception e) {
         }
-        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
+        return exists;
     }
 
     public void testConnectivity(){
+        String statusText="";
+        CheckConnectivity status = new CheckConnectivity();
+        try {
+            statusText = status.execute(new String[] {""}).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
+    }
+
+    private class CheckConnectivity extends AsyncTask<String, Void, String> {
+        String connectivity = "No Network";
+        String serverConnectivity = "Server Unreachable";
+        @Override
+        protected String doInBackground(String...  urls) {
+
+            connectivity = isOnline()?"Network OK":"No Network";
+            serverConnectivity = testServerConnectivity()?"Server OK":"Server Unreachable";
+
+             return connectivity + "\n" + serverConnectivity;
+        }
+    }
+
+    public void testNetworkConnectivity(){
         String online = isOnline()?"ONLINE":"OFFLINE";
         Toast.makeText(this, online, Toast.LENGTH_LONG).show();
     }
@@ -156,84 +197,5 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class refreshDownloadStatus extends AsyncTask<String, Void, String> {
 
-    @Override
-    protected String doInBackground(String...  urls) {
-        String statusText = "Nothing";
-        String speedText = "0 K/s";
-        String timeleftText = "";
-        //Get the XML
-
-        URL url;
-        try{
-            String statusFeed = "";
-            url = new URL(statusFeed);
-
-            URLConnection connection;
-            connection = url.openConnection();
-
-            HttpURLConnection httpConnection = (HttpURLConnection) connection;
-            int responseCode = httpConnection.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK){
-                InputStream in = httpConnection.getInputStream();
-
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-
-                //Parse the feed
-                Document dom = db.parse(in);
-                Element docEle = dom.getDocumentElement();
-
-                NodeList nl = docEle.getElementsByTagName("state");
-                if (nl != null && nl.getLength() > 0){
-                    Element queue = (Element)nl.item(0);
-                    statusText = queue.getTextContent();
-                }
-                nl = docEle.getElementsByTagName("speed");
-                if (nl != null && nl.getLength() > 0){
-                    Element queue = (Element)nl.item(0);
-                    speedText = queue.getTextContent();
-                }
-                nl = docEle.getElementsByTagName("timeleft");
-                if (nl != null && nl.getLength() > 0){
-                    Element queue = (Element)nl.item(0);
-                    timeleftText = queue.getTextContent();
-                }
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        }
-
-        return statusText + " at " + speedText + "/s [ETA " + timeleftText + "]";
-        }
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                showPreferences();
-                return true;
-            case R.id.action_exit:
-                //TODO: Exit ActionBar item clicked.  Must decide on action to take i.t.o service and notifications
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void showPreferences(){
-        Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
-        Intent i = new Intent(this, c);
-        startActivityForResult(i, SHOW_PREFERENCES);
-    }
 }

@@ -17,6 +17,7 @@ public final class PreferencesStore {
     private int DURATION1;
     private int DURATION2;
     private int DURATION3;
+    private int UPDATECOUNT;
 
     private PreferencesStore(Context context){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -27,6 +28,7 @@ public final class PreferencesStore {
         this.DURATION1 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION1, "5"));
         this.DURATION2 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION2, "15"));
         this.DURATION3 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION3, "30"));
+        this.UPDATECOUNT = 0;
     }
 
 
@@ -75,10 +77,19 @@ public final class PreferencesStore {
     }
 
     public int getRefreshIntervalMinutes(){
-        return 2;
+        return 10;
     }
 
     public int getRefreshIntervalSeconds(){
         return 20;
     }
+
+    public void incUpdateCount() {
+        this.UPDATECOUNT++;
+    }
+
+    public int getUpdateCount() {
+        return UPDATECOUNT;
+    }
+
 }
