@@ -76,6 +76,8 @@ public final class PreferencesStore {
                 API_KEY;
     }
 
+    //TODO: refresh update exponential dropoff
+
     public int getRefreshIntervalMinutes(){
         return 10;
     }

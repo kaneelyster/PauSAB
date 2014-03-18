@@ -3,7 +3,6 @@ package com.daneel.pausab;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 /**
  * Created by daneel on 2014/01/28.
@@ -12,17 +11,23 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //String msg = "Broadcast Received, must start activity";
         String action = intent.getAction();
 
-//        Toast.makeText(context, action, Toast.LENGTH_SHORT).show();
-
+        //A pause button was pressed
         if (action.contains("com.daneel.pausab.DURATION")){
             Intent serviceIntent = new Intent(context, PersistentAgent.class);
             serviceIntent.putExtra("Pause", action);
             context.startService(serviceIntent);
         }
+        //Force status refresh. Used in ongoing timer-based status checks
         else if (action.contains("Action")){
+            Intent serviceIntent = new Intent(context, PersistentAgent.class);
+            serviceIntent.putExtra("Action", "Start");
+            context.startService(serviceIntent);
+        }
+        //Network state changed, so start or end periodic status checks
+        else if (action.contains("android.net.wifi.WIFI_STATE_CHANGED")
+              || action.contains("android.net.conn.CONNECTIVITY_CHANGE")){
             Intent serviceIntent = new Intent(context, PersistentAgent.class);
             serviceIntent.putExtra("Action", "Start");
             context.startService(serviceIntent);

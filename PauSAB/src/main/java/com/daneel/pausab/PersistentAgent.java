@@ -48,10 +48,15 @@ public class PersistentAgent extends Service {
     public static String ACTION_DURATION2 = "com.daneel.pausab.DURATION2";
     public static String ACTION_DURATION3 = "com.daneel.pausab.DURATION3";
     public static String ACTION_MAINACTIVITY = "com.daneel.pausab.MAINACTIVITY";
+    public static int TYPE_WIFI          = 1;
+    public static int TYPE_MOBILE        = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
     public PreferencesStore preferences;
 
     public PersistentAgent() {
     }
+
+    //TODO: network status awareness
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -89,6 +94,9 @@ public class PersistentAgent extends Service {
                 }
 
                 setRecurringAlarm(intent);
+            }
+            else if (bundle.getString("Action").equals("Connectivity")) {
+
             }
         }
         return Service.START_STICKY;
@@ -199,6 +207,21 @@ public class PersistentAgent extends Service {
             return true;
         }
         return false;
+    }
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
     }
 
     public void createNotification(String statusText) {

@@ -39,7 +39,12 @@
             android:name="com.daneel.pausab.FragmentSettings">
         </activity>
 
-        <receiver android:name="com.daneel.pausab.MyBroadcastReceiver" >
+        <receiver android:name="com.daneel.pausab.MyBroadcastReceiver"
+            android:label="GeneralReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
         </receiver>
 
     </application>
