@@ -17,6 +17,7 @@ public final class PreferencesStore {
     private int DURATION1;
     private int DURATION2;
     private int DURATION3;
+    private int REFRESHINTERVAL;
     private int UPDATECOUNT;
 
     private PreferencesStore(Context context){
@@ -28,9 +29,9 @@ public final class PreferencesStore {
         this.DURATION1 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION1, "5"));
         this.DURATION2 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION2, "15"));
         this.DURATION3 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION3, "30"));
+        this.REFRESHINTERVAL = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_REFRESH_INTERVAL, "15"));
         this.UPDATECOUNT = 0;
     }
-
 
     public static PreferencesStore getInstance(Context context) {
         if (mInstance == null){
@@ -79,11 +80,11 @@ public final class PreferencesStore {
     //TODO: refresh update exponential dropoff
 
     public int getRefreshIntervalMinutes(){
-        return 10;
+        return REFRESHINTERVAL;
     }
 
     public int getRefreshIntervalSeconds(){
-        return 20;
+        return REFRESHINTERVAL*60;
     }
 
     public void incUpdateCount() {

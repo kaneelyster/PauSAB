@@ -54,22 +54,29 @@
             android:key="PREF_PAUSE_DURATION1"
             android:inputType="number"
             android:title="Pause Duration 1"
-            android:summary="Duration of first notification pause button"
+            android:summary="Duration of first notification pause button in minutes"
             android:defaultValue="5"/>
 
         <EditTextPreference
             android:key="PREF_PAUSE_DURATION2"
             android:inputType="number"
             android:title="Pause Duration 2"
-            android:summary="Duration of second notification pause button"
+            android:summary="Duration of second notification pause button in minutes"
             android:defaultValue="15"/>
 
         <EditTextPreference
             android:key="PREF_PAUSE_DURATION3"
             android:inputType="number"
             android:title="Pause Duration 3"
-            android:summary="Duration of third notification pause button"
+            android:summary="Duration of third notification pause button in minutes"
             android:defaultValue="30"/>
+
+        <EditTextPreference
+            android:key="PREF_REFRESH_INTERVAL"
+            android:inputType="number"
+            android:title="Notification Refresh Interval"
+            android:summary="Duration of third notification pause button in minutes"
+            android:defaultValue="15"/>
 
     </PreferenceCategory>
 

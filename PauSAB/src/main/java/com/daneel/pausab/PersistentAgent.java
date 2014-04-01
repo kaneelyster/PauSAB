@@ -32,6 +32,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
@@ -56,12 +57,10 @@ public class PersistentAgent extends Service {
     public PersistentAgent() {
     }
 
-    //TODO: network status awareness
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         preferences = PreferencesStore.getInstance(getApplicationContext());
-        String statusText = "";
+        ArrayList<String> statusText = new ArrayList<String>();
         Bundle bundle = intent.getExtras();
         boolean connectivity = testConnectivity();
         if (bundle != null) {
@@ -87,7 +86,11 @@ public class PersistentAgent extends Service {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
-                    createNotification(statusText);
+                    finally{
+                        statusText.add("Error");
+                        statusText.add("");
+                    }
+                    createNotification(statusText.get(0), statusText.get(1));
                 }
                 else{
                     clearNotification();
@@ -108,7 +111,7 @@ public class PersistentAgent extends Service {
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         //alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalMinutes()*60*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
-        alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
+        alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*1000, pintent);
 
         preferences.incUpdateCount();
     }
@@ -224,16 +227,16 @@ public class PersistentAgent extends Service {
         return TYPE_NOT_CONNECTED;
     }
 
-    public void createNotification(String statusText) {
+    public void createNotification(String statusText, String contentText) {
         // Prepare intents which are triggered if the notification is selected
 
-        Intent mainIntent = new Intent(this, MainActivity.class);
+        Intent mainIntent = new Intent(this, PauSAB.class);
         mainIntent.setAction(ACTION_MAINACTIVITY);
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(PauSAB.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(mainIntent);
 
@@ -255,20 +258,20 @@ public class PersistentAgent extends Service {
         pauseIntent3.setAction(ACTION_DURATION3);
         PendingIntent pIntent3 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent3, 0);
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sablogosmall96);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.mainlogo96);
         // Build notification
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(statusText)
                         //TODO: Refer to http://developer.android.com/guide/topics/ui/notifiers/notifications.html#HandlingNotifications
-                        //.setContentText(statusText)
-                        //.setContentInfo("ContentInfo")
-                .setTicker("Notification")
+                .setContentText(contentText)
+                //.setContentInfo(contentText)
+                //.setTicker(statusText)  //This creates ticker text on every notification refresh, so not using it anymore.
                 .setContentIntent(pMainIntent)
-                .setSmallIcon(R.drawable.sablogosmall)
+                .setSmallIcon(R.drawable.mainlogo256)
                 .setLargeIcon(bm)
-                .addAction(R.drawable.pausebmp32, "5 Min", pIntent1)
-                .addAction(R.drawable.pausebmp32, "15 Min", pIntent2)
-                .addAction(R.drawable.pausebmp32, "30 Min", pIntent3)
+                .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration1()) + " Min", pIntent1)
+                .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration2()) + " Min", pIntent2)
+                .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration3()) + " Min", pIntent3)
                 .setOngoing(true)
                 .setWhen(System.currentTimeMillis())
                 .build();
@@ -309,10 +312,12 @@ public class PersistentAgent extends Service {
         }
     }
 
-    private class refreshDownloadStatus extends AsyncTask<String, Void, String> {
+    private class refreshDownloadStatus extends AsyncTask<String, Void, ArrayList<String>> {
+
+        ArrayList<String> status = new ArrayList<String>();
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected ArrayList<String> doInBackground(String... urls) {
             String statusText = "Unreachable";
             String speedText = "0 K/s";
             String mbLeftText = "";
@@ -372,14 +377,23 @@ public class PersistentAgent extends Service {
             }
 
             if (statusText.equals("Paused")){
-                return "Paused for " + timeLeftText+ " | " + mbLeftText + " MB";
+                status.add("Paused for " + timeLeftText);
+                status.add(mbLeftText + " MB Left");
             }
             else if (statusText.equals("Downloading") || statusText.equals("IDLE")){
-                return statusText + " at " + speedText + "/s | " + mbLeftText + " MB";
+                status.add(statusText + " at " + speedText + "/s");
+                status.add(mbLeftText + " MB Left");
             }
             else{
-                return "Unreachable";
+                status.add("Unreachable");
+                status.add("");
             }
+            return status;
         }
+
+        public void onPostExecute( ArrayList<String> Param) {
+
+        }
+
     }
 }

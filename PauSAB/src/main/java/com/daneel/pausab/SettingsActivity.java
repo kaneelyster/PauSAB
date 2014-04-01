@@ -13,12 +13,13 @@ import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    public static final String KEY_PREF_SERVER_IP       = "PREF_SERVER_IP";
-    public static final String KEY_PREF_SERVER_PORT     = "PREF_SERVER_PORT";
-    public static final String KEY_PREF_API_KEY         = "PREF_API_KEY";
-    public static final String KEY_PREF_PAUSE_DURATION1 = "PREF_PAUSE_DURATION1";
-    public static final String KEY_PREF_PAUSE_DURATION2 = "PREF_PAUSE_DURATION2";
-    public static final String KEY_PREF_PAUSE_DURATION3 = "PREF_PAUSE_DURATION3";
+    public static final String KEY_PREF_SERVER_IP        = "PREF_SERVER_IP";
+    public static final String KEY_PREF_SERVER_PORT      = "PREF_SERVER_PORT";
+    public static final String KEY_PREF_API_KEY          = "PREF_API_KEY";
+    public static final String KEY_PREF_PAUSE_DURATION1  = "PREF_PAUSE_DURATION1";
+    public static final String KEY_PREF_PAUSE_DURATION2  = "PREF_PAUSE_DURATION2";
+    public static final String KEY_PREF_PAUSE_DURATION3  = "PREF_PAUSE_DURATION3";
+    public static final String KEY_PREF_REFRESH_INTERVAL = "PREF_REFERSH_INTERVAL";
 
     @Override
     public void onBuildHeaders(List<Header> target){
@@ -63,12 +64,18 @@ public class SettingsActivity extends PreferenceActivity {
             else if (key.equals(KEY_PREF_PAUSE_DURATION1)) {
                 Preference serverIPPref = findPreference(key);
                 serverIPPref.setSummary(sharedPreferences.getString(key, ""));
+
             }
             else if (key.equals(KEY_PREF_PAUSE_DURATION2)) {
                 Preference serverIPPref = findPreference(key);
                 serverIPPref.setSummary(sharedPreferences.getString(key, ""));
+
             }
             else if (key.equals(KEY_PREF_PAUSE_DURATION3)) {
+                Preference serverIPPref = findPreference(key);
+                serverIPPref.setSummary(sharedPreferences.getString(key, ""));
+            }
+            else if (key.equals(KEY_PREF_REFRESH_INTERVAL)){
                 Preference serverIPPref = findPreference(key);
                 serverIPPref.setSummary(sharedPreferences.getString(key, ""));
             }

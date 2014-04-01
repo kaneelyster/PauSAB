@@ -14,15 +14,16 @@ import android.preference.PreferenceManager;
 
 public class FragmentSettings extends PreferenceActivity {
 
-    public static final String KEY_PREF_SERVER_IP       = "PREF_SERVER_IP";
-    public static final String KEY_PREF_SERVER_PORT     = "PREF_SERVER_PORT";
-    public static final String KEY_PREF_SERVER_USER     = "PREF_SERVER_USER";
-    public static final String KEY_PREF_SERVER_PASS     = "PREF_SERVER_PASS";
-    public static final String KEY_PREF_API_KEY         = "PREF_API_KEY";
-    public static final String KEY_PREF_GET_API_KEY     = "PREF_GET_API_KEY";
-    public static final String KEY_PREF_PAUSE_DURATION1 = "PREF_PAUSE_DURATION1";
-    public static final String KEY_PREF_PAUSE_DURATION2 = "PREF_PAUSE_DURATION2";
-    public static final String KEY_PREF_PAUSE_DURATION3 = "PREF_PAUSE_DURATION3";
+    public static final String KEY_PREF_SERVER_IP        = "PREF_SERVER_IP";
+    public static final String KEY_PREF_SERVER_PORT      = "PREF_SERVER_PORT";
+    public static final String KEY_PREF_SERVER_USER      = "PREF_SERVER_USER";
+    public static final String KEY_PREF_SERVER_PASS      = "PREF_SERVER_PASS";
+    public static final String KEY_PREF_API_KEY          = "PREF_API_KEY";
+    public static final String KEY_PREF_GET_API_KEY      = "PREF_GET_API_KEY";
+    public static final String KEY_PREF_PAUSE_DURATION1  = "PREF_PAUSE_DURATION1";
+    public static final String KEY_PREF_PAUSE_DURATION2  = "PREF_PAUSE_DURATION2";
+    public static final String KEY_PREF_PAUSE_DURATION3  = "PREF_PAUSE_DURATION3";
+    public static final String KEY_PREF_REFRESH_INTERVAL = "PREF_REFRESH_INTERVAL";
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -107,6 +108,10 @@ public class FragmentSettings extends PreferenceActivity {
                 Pref.setSummary(sharedPreferences.getString(key, ""));
             }
             else if (key.equals(KEY_PREF_PAUSE_DURATION3)) {
+                Preference Pref = findPreference(key);
+                Pref.setSummary(sharedPreferences.getString(key, ""));
+            }
+            else if (key.equals(KEY_PREF_REFRESH_INTERVAL)) {
                 Preference Pref = findPreference(key);
                 Pref.setSummary(sharedPreferences.getString(key, ""));
             }

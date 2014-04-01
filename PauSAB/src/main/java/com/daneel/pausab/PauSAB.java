@@ -25,7 +25,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends Activity {
+public class PauSAB extends Activity {
 
     public PreferencesStore preferences;
 
