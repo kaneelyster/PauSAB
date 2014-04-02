@@ -19,10 +19,11 @@ public final class PreferencesStore {
     private int DURATION3;
     private int REFRESHINTERVAL;
     private int UPDATECOUNT;
+    private Context context;
 
     private PreferencesStore(Context context){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-
+        this.context = context;
         this.SERVER_IP = settings.getString(FragmentSettings.KEY_PREF_SERVER_IP, "");
         this.SERVER_PORT = settings.getString(FragmentSettings.KEY_PREF_SERVER_PORT, "8080");
         this.API_KEY = settings.getString(FragmentSettings.KEY_PREF_API_KEY, "");
@@ -38,6 +39,24 @@ public final class PreferencesStore {
             mInstance = new PreferencesStore(context);
         }
         return mInstance;
+    }
+
+    public static PreferencesStore getInstance() {
+        if (mInstance != null){
+            return mInstance;
+        }
+        return null;
+    }
+
+    public void refreshSettings(){
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.SERVER_IP = settings.getString(FragmentSettings.KEY_PREF_SERVER_IP, "");
+        this.SERVER_PORT = settings.getString(FragmentSettings.KEY_PREF_SERVER_PORT, "8080");
+        this.API_KEY = settings.getString(FragmentSettings.KEY_PREF_API_KEY, "");
+        this.DURATION1 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION1, "5"));
+        this.DURATION2 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION2, "15"));
+        this.DURATION3 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION3, "30"));
+        this.REFRESHINTERVAL = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_REFRESH_INTERVAL, "15"));
     }
 
     public String getSERVER_IP() {

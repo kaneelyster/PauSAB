@@ -87,10 +87,6 @@ public class FragmentSettings extends PreferenceActivity {
                 Preference Pref = findPreference(key);
                 Pref.setSummary(sharedPreferences.getString(key, ""));
             }
-//            else if (key.equals(KEY_PREF_GET_API_KEY)) {
-//                Preference Pref = findPreference(key);
-//                Pref.set
-//            }
             else if (key.equals(KEY_PREF_SERVER_USER)) {
                 Preference Pref = findPreference(key);
                 Pref.setSummary(sharedPreferences.getString(key, ""));
@@ -114,6 +110,12 @@ public class FragmentSettings extends PreferenceActivity {
             else if (key.equals(KEY_PREF_REFRESH_INTERVAL)) {
                 Preference Pref = findPreference(key);
                 Pref.setSummary(sharedPreferences.getString(key, ""));
+            }
+            try {
+                PreferencesStore.getInstance().refreshSettings();
+            }
+            catch(Exception e){
+
             }
         }
 

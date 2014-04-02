@@ -19,7 +19,7 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String KEY_PREF_PAUSE_DURATION1  = "PREF_PAUSE_DURATION1";
     public static final String KEY_PREF_PAUSE_DURATION2  = "PREF_PAUSE_DURATION2";
     public static final String KEY_PREF_PAUSE_DURATION3  = "PREF_PAUSE_DURATION3";
-    public static final String KEY_PREF_REFRESH_INTERVAL = "PREF_REFERSH_INTERVAL";
+    public static final String KEY_PREF_REFRESH_INTERVAL = "PREF_REFRESH_INTERVAL";
 
     @Override
     public void onBuildHeaders(List<Header> target){
@@ -79,6 +79,13 @@ public class SettingsActivity extends PreferenceActivity {
                 Preference serverIPPref = findPreference(key);
                 serverIPPref.setSummary(sharedPreferences.getString(key, ""));
             }
+            try {
+                PreferencesStore.getInstance().refreshSettings();
+            }
+            catch(Exception e){
+
+            }
+
         }
     }
 }

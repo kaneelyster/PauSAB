@@ -75,6 +75,7 @@ public class PersistentAgent extends Service {
                 else if (action.equals(ACTION_DURATION3)){
                     pauseDownloads(preferences.getDuration3());
                 }
+                setRecurringAlarm(intent, 500);
             }
             else if (bundle.getString("Action").equals("Start")) {
                 if (connectivity){
@@ -98,9 +99,9 @@ public class PersistentAgent extends Service {
 
                 setRecurringAlarm(intent);
             }
-            else if (bundle.getString("Action").equals("Connectivity")) {
-
-            }
+//            else if (bundle.getString("Action").equals("Connectivity")) {
+//
+//            }
         }
         return Service.START_STICKY;
     }
@@ -114,6 +115,15 @@ public class PersistentAgent extends Service {
         alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*1000, pintent);
 
         preferences.incUpdateCount();
+    }
+
+    public void setRecurringAlarm(Intent intent, int delayMillis) {
+        Calendar cal = Calendar.getInstance();
+        //Intent alarmIntent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+delayMillis, delayMillis, pintent);
+
     }
 
     public void clearRecurringAlarm(){
