@@ -8,6 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+<!--
+TODO:  MAKE Buttons look purrdy
+-->
+
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
@@ -27,15 +31,6 @@
         android:layout_marginTop="23dp"
         android:onClick="startNewService"
         android:text="Start Service" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test"
-        android:id="@+id/button3"
-        android:layout_below="@+id/button2"
-        android:layout_centerHorizontal="true"
-        android:onClick="test" />
 
 </RelativeLayout>
 

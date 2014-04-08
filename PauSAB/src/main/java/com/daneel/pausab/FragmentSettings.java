@@ -19,7 +19,6 @@ public class FragmentSettings extends PreferenceActivity {
     public static final String KEY_PREF_SERVER_USER      = "PREF_SERVER_USER";
     public static final String KEY_PREF_SERVER_PASS      = "PREF_SERVER_PASS";
     public static final String KEY_PREF_API_KEY          = "PREF_API_KEY";
-    public static final String KEY_PREF_GET_API_KEY      = "PREF_GET_API_KEY";
     public static final String KEY_PREF_PAUSE_DURATION1  = "PREF_PAUSE_DURATION1";
     public static final String KEY_PREF_PAUSE_DURATION2  = "PREF_PAUSE_DURATION2";
     public static final String KEY_PREF_PAUSE_DURATION3  = "PREF_PAUSE_DURATION3";
@@ -28,6 +27,7 @@ public class FragmentSettings extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsActivityFragment()).commit();
         PreferenceManager.setDefaultValues(this, R.xml.preference_screen, false);
 
@@ -40,16 +40,6 @@ public class FragmentSettings extends PreferenceActivity {
         {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preference_screen);
-
-            Preference PrefGetAPIKey = findPreference(KEY_PREF_GET_API_KEY);
-            PrefGetAPIKey.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse("www.google.com"));
-                    startActivity(i);
-                    return true;
-                }
-            });
 
             for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
                 initSummary(getPreferenceScreen().getPreference(i));
