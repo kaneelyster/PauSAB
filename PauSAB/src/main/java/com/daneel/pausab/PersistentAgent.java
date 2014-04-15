@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -240,13 +241,19 @@ public class PersistentAgent extends Service {
     public void createNotification(String statusText, String contentText) {
         // Prepare intents which are triggered if the notification is selected
 
-        Intent mainIntent = new Intent(this, PauSAB.class);
-        mainIntent.setAction(ACTION_MAINACTIVITY);
-        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        Intent mainIntent = new Intent(this, PauSAB.class);
+//        mainIntent.setAction(ACTION_MAINACTIVITY);
+//        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        Intent mainIntent = new Intent(this, Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class);
+        mainIntent.setAction("android.intent.action.VIEW)");
+        mainIntent.putExtra("Action", "Preferences");
+        //mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(PauSAB.class);
+        //stackBuilder.addParentStack(PauSAB.class);
+        //stackBuilder.addParentStack(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(mainIntent);
 

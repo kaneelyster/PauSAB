@@ -1,40 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_height="match_parent"
-    android:layout_width="match_parent">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory
+        android:title="PauSAB Notification Settings">
+        <Preference
+            android:key="key"
+            android:title="Start Service"
+            android:summary="Start the notification service">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.daneel.pausab.ServiceLauncher"
+                android:targetPackage="com.daneel.pausab">
+                <extra android:name="Action" android:value="Start" />
+            </intent>
+        </Preference>
+        <Preference
+            android:key="key"
+            android:title="Stop Service"
+            android:summary="Stop the notification service">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.daneel.pausab.ServiceLauncher"
+                android:targetPackage="com.daneel.pausab">
+                <extra android:name="Action" android:value="Stop" />
+            </intent>
+        </Preference>
+    </PreferenceCategory>
+
+
     <PreferenceCategory
         android:title="Server Settings">
         <EditTextPreference
-            android:key="PREF_SERVER_IP"
+            android:defaultValue="192.168.0.1"
             android:inputType="textUri"
-            android:title="Server IP"
+            android:key="PREF_SERVER_IP"
             android:summary="SABnzbd web server IP"
-            android:defaultValue="192.168.0.1"/>
+            android:title="Server IP"/>
 
         <EditTextPreference
-            android:key="PREF_SERVER_PORT"
+            android:defaultValue="8080"
             android:inputType="number"
-            android:title="Server Port"
+            android:key="PREF_SERVER_PORT"
             android:summary="SABnzbd web server port number"
-            android:defaultValue="8080"/>
+            android:title="Server Port"/>
 
         <EditTextPreference
+            android:defaultValue=""
             android:key="PREF_SERVER_USER"
-            android:title="SAB Username"
             android:summary="SABnzbd web server username"
-            android:defaultValue=""/>
+            android:title="SAB Username"/>
 
         <EditTextPreference
-            android:key="PREF_SERVER_PASS"
+            android:defaultValue=""
             android:inputType="textPassword"
-            android:title="SAB Password"
+            android:key="PREF_SERVER_PASS"
             android:summary="SABnzbd web server password"
-            android:defaultValue=""/>
+            android:title="SAB Password"/>
 
         <EditTextPreference
+            android:defaultValue=""
             android:key="PREF_API_KEY"
-            android:title="SAB API Key"
             android:summary="SABnzbd web server API key"
-            android:defaultValue=""/>
+            android:title="SAB API Key"/>
         />
 
     </PreferenceCategory>
@@ -42,32 +72,32 @@
         android:title="User Settings">
 
         <EditTextPreference
+            android:defaultValue="5"
+            android:inputType="number"
             android:key="PREF_PAUSE_DURATION1"
-            android:inputType="number"
-            android:title="Pause Duration 1"
             android:summary="Duration of first notification pause button in minutes"
-            android:defaultValue="5"/>
+            android:title="Pause Duration 1"/>
 
         <EditTextPreference
+            android:defaultValue="15"
+            android:inputType="number"
             android:key="PREF_PAUSE_DURATION2"
-            android:inputType="number"
-            android:title="Pause Duration 2"
             android:summary="Duration of second notification pause button in minutes"
-            android:defaultValue="15"/>
+            android:title="Pause Duration 2"/>
 
         <EditTextPreference
+            android:defaultValue="30"
+            android:inputType="number"
             android:key="PREF_PAUSE_DURATION3"
-            android:inputType="number"
-            android:title="Pause Duration 3"
             android:summary="Duration of third notification pause button in minutes"
-            android:defaultValue="30"/>
+            android:title="Pause Duration 3"/>
 
         <EditTextPreference
-            android:key="PREF_REFRESH_INTERVAL"
+            android:defaultValue="15"
             android:inputType="number"
-            android:title="Notification Refresh Interval"
+            android:key="PREF_REFRESH_INTERVAL"
             android:summary="Duration of third notification pause button in minutes"
-            android:defaultValue="15"/>
+            android:title="Notification Refresh Interval"/>
 
     </PreferenceCategory>
 

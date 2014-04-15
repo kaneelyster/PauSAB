@@ -1,85 +1,84 @@
-package com.daneel.pausab;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-public class PauSAB extends Activity {
-
-    public PreferencesStore preferences;
-
-    private static final int SHOW_PREFERENCES = 1;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        preferences = PreferencesStore.getInstance(getApplicationContext());
-
-        String action = getIntent().getAction();
-
-        if (action != null) {
-            if (action.equals("com.daneel.pausab.MAINACTIVITY")){
-                showPreferences();
-            }
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    // Start the  service
-    public void startNewService(View view) {
-
-        Intent serviceIntent = new Intent(this, PersistentAgent.class);
-        serviceIntent.putExtra("Action", "Start");
-        startService(serviceIntent);
-    }
-
-    // Stop the  service
-    public void stopNewService(View view) {
-
-        stopService(new Intent(this, PersistentAgent.class));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                showPreferences();
-                return true;
-            case R.id.action_exit:
-                //TODO: Exit ActionBar item clicked.  Must decide on action to take i.t.o service and notifications
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void showPreferences(){
-        Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
-        Intent i = new Intent(this, c);
-        startActivityForResult(i, SHOW_PREFERENCES);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
+//package com.daneel.pausab;
+//
+//import android.os.Build;
+//import android.os.Bundle;
+//import android.app.Activity;
+//import android.content.Intent;
+//import android.view.Menu;
+//import android.view.MenuItem;
+//import android.view.View;
+//
+//public class PauSAB extends Activity {
+//
+//    public PreferencesStore preferences;
+//
+//    private static final int SHOW_PREFERENCES = 1;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//        preferences = PreferencesStore.getInstance(getApplicationContext());
+//
+//        String action = getIntent().getAction();
+//
+//        if (action != null) {
+//            if (action.equals("com.daneel.pausab.MAINACTIVITY")){
+//                showPreferences();
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//    }
+//
+//    // Start the  service
+//    public void startNewService(View view) {
+//
+////        Intent serviceIntent = new Intent(this, PersistentAgent.class);
+////        serviceIntent.putExtra("Action", "Start");
+////        startService(serviceIntent);
+//        Intent serviceIntent = new Intent(this, ServiceLauncher.class);
+//        startActivity(serviceIntent);
+//    }
+//
+//    // Stop the  service
+//    public void stopNewService(View view) {
+//        stopService(new Intent(this, PersistentAgent.class));
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_settings:
+//                showPreferences();
+//                return true;
+//            case R.id.action_exit:
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
+//
+//    public void showPreferences(){
+//        Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
+//        Intent i = new Intent(this, c);
+//        startActivityForResult(i, SHOW_PREFERENCES);
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 //
 ////-----------------------------------------------------------------------------------------------------------//
 ////--------------------- ALL CODE BELOW THIS IS PURELY FOR TESTING/EXPERIMENTAL PURPOSES ---------------------//
 ////-----------------------------------------------------------------------------------------------------------//
-//
+///*
 //
 //    public void test(View view){
 //        //refreshDownloadStatus();
@@ -141,6 +140,8 @@ public class PauSAB extends Activity {
 //        Toast.makeText(this, online, Toast.LENGTH_LONG).show();
 //    }
 //
+//
+//
 //    public boolean isOnline() {
 //        ConnectivityManager cm =
 //                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -180,6 +181,6 @@ public class PauSAB extends Activity {
 //            return statusText;
 //        }
 //    }
-
-
-}
+//*/
+//
+//}

@@ -18,21 +18,32 @@
             android:enabled="true"
             android:permission="com.daneel.PAUSAB_SERVICE_PERMISSION" />
 
+        <!--<activity-->
+            <!--android:name=".PauSAB"-->
+            <!--android:label="@string/title_activity_main" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
+
         <activity
-            android:name=".PauSAB"
-            android:label="@string/title_activity_main" >
+            android:name=".ServiceLauncher"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:noHistory = "true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
+        <meta-data android:name="Action" android:value="Preferences" />
         <activity
             android:name="com.daneel.pausab.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".PauSAB">
+            android:label="@string/title_activity_settings">
+            <!--android:parentActivityName=".PauSAB"-->
         </activity>
 
         <activity
