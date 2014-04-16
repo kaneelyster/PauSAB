@@ -77,14 +77,6 @@ public class FragmentSettings extends PreferenceActivity {
                 Preference Pref = findPreference(key);
                 Pref.setSummary(sharedPreferences.getString(key, ""));
             }
-            else if (key.equals(KEY_PREF_SERVER_USER)) {
-                Preference Pref = findPreference(key);
-                Pref.setSummary(sharedPreferences.getString(key, ""));
-            }
-            else if (key.equals(KEY_PREF_SERVER_PASS)) {
-                Preference Pref = findPreference(key);
-                Pref.setSummary("Provided");
-            }
             else if (key.equals(KEY_PREF_PAUSE_DURATION1)) {
                 Preference Pref = findPreference(key);
                 Pref.setSummary(sharedPreferences.getString(key, ""));

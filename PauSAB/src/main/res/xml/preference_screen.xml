@@ -20,7 +20,6 @@
             android:key="key"
             android:title="Stop Service"
             android:summary="Stop the notification service">
-
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="com.daneel.pausab.ServiceLauncher"
@@ -46,19 +45,6 @@
             android:key="PREF_SERVER_PORT"
             android:summary="SABnzbd web server port number"
             android:title="Server Port"/>
-
-        <EditTextPreference
-            android:defaultValue=""
-            android:key="PREF_SERVER_USER"
-            android:summary="SABnzbd web server username"
-            android:title="SAB Username"/>
-
-        <EditTextPreference
-            android:defaultValue=""
-            android:inputType="textPassword"
-            android:key="PREF_SERVER_PASS"
-            android:summary="SABnzbd web server password"
-            android:title="SAB Password"/>
 
         <EditTextPreference
             android:defaultValue=""
@@ -101,4 +87,23 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Info">
+            <PreferenceScreen
+                android:key="about"
+                android:title="About"
+                android:summary="Version, Contact">
+                <Preference
+                        android:key="Version"
+                        android:title="Version"
+                        android:summary="1.0.0">
+                    </Preference>
+                <Preference
+                    android:key="ContactMe"
+                    android:title="Contact the developer">
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="mailto:pausabnzb@gmail.com"/>
+                </Preference>
+            </PreferenceScreen>
+    </PreferenceCategory>
 </PreferenceScreen>
