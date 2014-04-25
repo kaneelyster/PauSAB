@@ -93,11 +93,7 @@
                 android:key="about"
                 android:title="About"
                 android:summary="Version, Contact">
-                <Preference
-                        android:key="Version"
-                        android:title="Version"
-                        android:summary="1.0.0">
-                    </Preference>
+                <com.daneel.pausab.VersionPreference android:title="Version" />
                 <Preference
                     android:key="ContactMe"
                     android:title="Contact the developer">
