@@ -14,7 +14,7 @@ repositories {
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "19.0.3"
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
         minSdkVersion 16
@@ -22,10 +22,24 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            storeFile file(System.console().readLine("\n\$ Enter keystore path: "))
+            storePassword System.console().readPassword("\n\$ Enter keystore password: ")
+            keyAlias System.console().readLine("\n\$ Enter key alias: ")
+            keyPassword System.console().readPassword("\n\$ Enter key password: ")
+        }
+    }
+
     buildTypes {
         release {
-            runProguard false
+            runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            debuggable false
+            packageNameSuffix 'PauSAB'
+            versionNameSuffix '1.0'
+            zipAlign true
+            signingConfig signingConfigs.release
         }
     }
 }
