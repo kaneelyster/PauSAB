@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+5
         <meta-data android:name="Action" android:value="Preferences" />
         <activity
             android:name="com.daneel.pausab.SettingsActivity"

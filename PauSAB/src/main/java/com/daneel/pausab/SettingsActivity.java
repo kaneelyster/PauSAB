@@ -1,5 +1,6 @@
 package com.daneel.pausab;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -33,6 +34,17 @@ public class SettingsActivity extends PreferenceActivity {
         {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preference_screen);
+
+            // Set start/stop service intents
+            Preference startPreference = findPreference("PREF_START_SERVICE");
+            Intent startIntent = new Intent(getActivity().getApplication(), ServiceLauncher.class);
+            startIntent.putExtra("Action", "Start");
+            startPreference.setIntent(startIntent);
+
+            Preference stopPreference = findPreference("PREF_STOP_SERVICE");
+            Intent stopIntent = new Intent(getActivity().getApplication(), ServiceLauncher.class);
+            stopIntent.putExtra("Action", "Stop");
+            stopPreference.setIntent(stopIntent);
 
         }
         @Override

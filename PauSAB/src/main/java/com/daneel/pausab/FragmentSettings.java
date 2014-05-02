@@ -30,7 +30,6 @@ public class FragmentSettings extends PreferenceActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsActivityFragment()).commit();
         PreferenceManager.setDefaultValues(this, R.xml.preference_screen, false);
-
     }
 
     public static class SettingsActivityFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener
@@ -44,6 +43,17 @@ public class FragmentSettings extends PreferenceActivity {
             for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
                 initSummary(getPreferenceScreen().getPreference(i));
             }
+
+            // Set start/stop service intents
+            Preference startPreference = findPreference("PREF_START_SERVICE");
+            Intent startIntent = new Intent(getActivity().getApplication(), ServiceLauncher.class);
+            startIntent.putExtra("Action", "Start");
+            startPreference.setIntent(startIntent);
+
+            Preference stopPreference = findPreference("PREF_STOP_SERVICE");
+            Intent stopIntent = new Intent(getActivity().getApplication(), ServiceLauncher.class);
+            stopIntent.putExtra("Action", "Stop");
+            stopPreference.setIntent(stopIntent);
         }
 
         @Override
