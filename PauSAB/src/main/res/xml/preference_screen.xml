@@ -9,23 +9,12 @@
             android:title="Start Service"
             android:summary="Start the notification service">
 
-            <!--<intent-->
-                <!--android:action="android.intent.action.VIEW"-->
-                <!--android:targetClass="com.daneel.pausab.ServiceLauncher"-->
-                <!--android:targetPackage="com.daneel.pausab">-->
-                <!--<extra android:name="Action" android:value="Start" />-->
-            <!--</intent>-->
         </Preference>
         <Preference
             android:key="PREF_STOP_SERVICE"
             android:title="Stop Service"
             android:summary="Stop the notification service">
-            <!--<intent-->
-                <!--android:action="android.intent.action.VIEW"-->
-                <!--android:targetClass="com.daneel.pausab.ServiceLauncher"-->
-                <!--android:targetPackage="com.daneel.pausab">-->
-                <!--<extra android:name="Action" android:value="Stop" />-->
-            <!--</intent>-->
+
         </Preference>
     </PreferenceCategory>
 
