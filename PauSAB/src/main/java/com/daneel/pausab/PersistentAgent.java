@@ -67,18 +67,18 @@ public class PersistentAgent extends Service {
         if (bundle != null) {
             if (bundle.getString("Pause") != null && connectivity){
                 String action = bundle.getString("Pause");
-                if (action.equals(ACTION_DURATION1)){
+                if (action != null && action.equals(ACTION_DURATION1)){
                     pauseDownloads(preferences.getDuration1());
                 }
-                else if (action.equals(ACTION_DURATION2)){
+                else if (action != null && action.equals(ACTION_DURATION2)){
                     pauseDownloads(preferences.getDuration2());
                 }
-                else if (action.equals(ACTION_DURATION3)){
+                else if (action != null && action.equals(ACTION_DURATION3)){
                     pauseDownloads(preferences.getDuration3());
                 }
                 setRecurringAlarm(intent, 500);
             }
-            else if (bundle.getString("Action").equals("Start")) {
+            else if ("Start".equals(bundle.getString( "Action"))) {
                 if (connectivity){
                     refreshDownloadStatus status = new refreshDownloadStatus();
                     try {
@@ -147,8 +147,14 @@ public class PersistentAgent extends Service {
     }
 
     public void clearNotification() {
-        NotificationManager nMgr = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        nMgr.cancel(0);
+        try {
+            NotificationManager nMgr = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            nMgr.cancel(0);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -209,6 +215,7 @@ public class PersistentAgent extends Service {
             exists = true;
         }
         catch (Exception e) {
+            e.printStackTrace();
         }
         return exists;
     }
@@ -263,40 +270,45 @@ public class PersistentAgent extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
-        Intent pauseIntent1 = new Intent(this, MyBroadcastReceiver.class);
-        pauseIntent1.setAction(ACTION_DURATION1);
-        PendingIntent pIntent1 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent1, 0);
+        try {
+            Intent pauseIntent1 = new Intent(this, MyBroadcastReceiver.class);
+            pauseIntent1.setAction(ACTION_DURATION1);
+            PendingIntent pIntent1 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent1, 0);
 
-        Intent pauseIntent2 = new Intent(this, MyBroadcastReceiver.class);
-        pauseIntent2.setAction(ACTION_DURATION2);
-        PendingIntent pIntent2 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent2, 0);
+            Intent pauseIntent2 = new Intent(this, MyBroadcastReceiver.class);
+            pauseIntent2.setAction(ACTION_DURATION2);
+            PendingIntent pIntent2 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent2, 0);
 
-        Intent pauseIntent3 = new Intent(this, MyBroadcastReceiver.class);
-        pauseIntent3.setAction(ACTION_DURATION3);
-        PendingIntent pIntent3 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent3, 0);
+            Intent pauseIntent3 = new Intent(this, MyBroadcastReceiver.class);
+            pauseIntent3.setAction(ACTION_DURATION3);
+            PendingIntent pIntent3 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, pauseIntent3, 0);
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.mainlogo96);
-        // Build notification
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle(statusText)
-                        //TODO: Refer to http://developer.android.com/guide/topics/ui/notifiers/notifications.html#HandlingNotifications
-                .setContentText(contentText)
-                //.setContentInfo(contentText)
-                //.setTicker(statusText)  //This creates ticker text on every notification refresh, so not using it anymore.
-                .setContentIntent(pMainIntent)
-                .setSmallIcon(R.drawable.mainlogo256)
-                .setLargeIcon(bm)
-                .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration1()) + " Min", pIntent1)
-                .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration2()) + " Min", pIntent2)
-                .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration3()) + " Min", pIntent3)
-                .setOngoing(true)
-                .setWhen(System.currentTimeMillis())
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // Hide the notification after its selected
-        //notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.mainlogo96);
+            // Build notification
+            Notification notification = new Notification.Builder(this)
+                    .setContentTitle(statusText)
+                            //TODO: Refer to http://developer.android.com/guide/topics/ui/notifiers/notifications.html#HandlingNotifications
+                    .setContentText(contentText)
+                            //.setContentInfo(contentText)
+                            //.setTicker(statusText)  //This creates ticker text on every notification refresh, so not using it anymore.
+                    .setContentIntent(pMainIntent)
+                    .setSmallIcon(R.drawable.mainlogo256)
+                    .setLargeIcon(bm)
+                    .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration1()) + " Min", pIntent1)
+                    .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration2()) + " Min", pIntent2)
+                    .addAction(R.drawable.pause32png, String.valueOf(preferences.getDuration3()) + " Min", pIntent3)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .build();
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            // Hide the notification after its selected
+            //notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        notificationManager.notify(0, notification);
+            notificationManager.notify(0, notification);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
 

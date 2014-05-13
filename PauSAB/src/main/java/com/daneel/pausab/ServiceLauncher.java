@@ -22,13 +22,13 @@ public class ServiceLauncher extends Activity {
         if (getIntent().hasExtra("Action")) {
             Bundle extras = getIntent().getExtras();
 
-            if (extras.getString("Action").equals("Start")) {
+            if (extras != null && extras.getString("Action") != null && "Start".equals(extras.getString("Action"))) {
                 Intent serviceIntent = new Intent(this, PersistentAgent.class);
                 serviceIntent.putExtra("Action", "Start");
                 startService(serviceIntent);
-            } else if (extras.getString("Action").equals("Stop")) {
+            } else if (extras != null && extras.getString("Action") != null && "Stop".equals(extras.getString("Action"))) {
                 stopService(new Intent(this, PersistentAgent.class));
-            } else if (extras.getString("Action").equals("Preferences")) {
+            } else if (extras != null && extras.getString("Action") != null &&  "Preferences".equals(extras.getString("Action"))) {
                 Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
                 Intent i = new Intent(this, c);
                 startActivityForResult(i, SHOW_PREFERENCES);
