@@ -38,8 +38,11 @@ public class ServiceLauncher extends Activity {
             try {
                 ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
                 Bundle bundle = ai.metaData;
-                String myApiKey = bundle.getString("Action");
-                if (myApiKey.equals("Preferences")) {
+                String myApiKey = "";
+                if (bundle != null) {
+                    myApiKey = bundle.getString("Action");
+                }
+                if ("Preferences".equals(myApiKey)) {
                     Class c = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class;
                     Intent i = new Intent(this, c);
                     startActivityForResult(i, SHOW_PREFERENCES);

@@ -62,9 +62,10 @@ public class PersistentAgent extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         preferences = PreferencesStore.getInstance(getApplicationContext());
         ArrayList<String> statusText = new ArrayList<String>();
+
         Bundle bundle = intent.getExtras();
         boolean connectivity = testConnectivity();
-        if (bundle != null) {
+        if (intent.getExtras() != null) {
             if (bundle.getString("Pause") != null && connectivity){
                 String action = bundle.getString("Pause");
                 if (action != null && action.equals(ACTION_DURATION1)){
@@ -78,7 +79,10 @@ public class PersistentAgent extends Service {
                 }
                 setRecurringAlarm(intent, 500);
             }
-            else if ("Start".equals(bundle.getString( "Action"))) {
+            else if ("Start".equals(bundle.getString("Action"))
+                    || "StartSched".equals(bundle.getString("Action"))
+                    || ("StartConnChange".equals(bundle.getString("Action")) && preferences.getSERVICESTATUS() == 1)) {
+                preferences.setSERVICESTATUS(1);
                 if (connectivity){
                     refreshDownloadStatus status = new refreshDownloadStatus();
                     try {
@@ -97,8 +101,9 @@ public class PersistentAgent extends Service {
                 else{
                     clearNotification();
                 }
-
-                setRecurringAlarm(intent);
+                if (preferences.getSERVICESTATUS() == 1) {
+                    setRecurringAlarm(intent);
+                }
             }
 //            else if (bundle.getString("Action").equals("Connectivity")) {
 //
@@ -144,6 +149,7 @@ public class PersistentAgent extends Service {
         //Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
         clearNotification();
         clearRecurringAlarm();
+        preferences.setSERVICESTATUS(0);
     }
 
     public void clearNotification() {
@@ -247,10 +253,6 @@ public class PersistentAgent extends Service {
 
     public void createNotification(String statusText, String contentText) {
         // Prepare intents which are triggered if the notification is selected
-
-//        Intent mainIntent = new Intent(this, PauSAB.class);
-//        mainIntent.setAction(ACTION_MAINACTIVITY);
-//        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Intent mainIntent = new Intent(this, Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? SettingsActivity.class : FragmentSettings.class);
         mainIntent.setAction("android.intent.action.VIEW)");

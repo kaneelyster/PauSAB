@@ -22,14 +22,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         //Force status refresh. Used in ongoing timer-based status checks
         else if (action != null && action.contains("Action")){
             Intent serviceIntent = new Intent(context, PersistentAgent.class);
-            serviceIntent.putExtra("Action", "Start");
+            serviceIntent.putExtra("Action", "StartSched");
             context.startService(serviceIntent);
         }
         //Network state changed, so start or end periodic status checks
         else if (action != null && action.contains("android.net.wifi.WIFI_STATE_CHANGED")
               || (action != null && action.contains("android.net.conn.CONNECTIVITY_CHANGE"))){
             Intent serviceIntent = new Intent(context, PersistentAgent.class);
-            serviceIntent.putExtra("Action", "Start");
+            serviceIntent.putExtra("Action", "StartConnChange");
             context.startService(serviceIntent);
         }
     }

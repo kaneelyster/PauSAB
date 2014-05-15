@@ -20,6 +20,7 @@ public final class PreferencesStore {
     private int REFRESHINTERVAL;
     private int UPDATECOUNT;
     private Context context;
+    private int SERVICESTATUS;
 
     private PreferencesStore(Context context){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -32,6 +33,7 @@ public final class PreferencesStore {
         this.DURATION3 = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_PAUSE_DURATION3, "30"));
         this.REFRESHINTERVAL = Integer.decode(settings.getString(FragmentSettings.KEY_PREF_REFRESH_INTERVAL, "15"));
         this.UPDATECOUNT = 0;
+        this.SERVICESTATUS = 1;
     }
 
     public static PreferencesStore getInstance(Context context) {
@@ -113,5 +115,9 @@ public final class PreferencesStore {
     public int getUpdateCount() {
         return UPDATECOUNT;
     }
+
+    public int getSERVICESTATUS() {return SERVICESTATUS; }
+
+    public void setSERVICESTATUS(int SERVICESTATUS) {this.SERVICESTATUS = SERVICESTATUS;}
 
 }
