@@ -19,27 +19,19 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 18
-        versionCode 1
-        versionName "1.0"
-    }
-    signingConfigs {
-        release {
-            storeFile file(System.console().readLine("\n\$ Enter keystore path: "))
-            storePassword System.console().readPassword("\n\$ Enter keystore password: ")
-            keyAlias System.console().readLine("\n\$ Enter key alias: ")
-            keyPassword System.console().readPassword("\n\$ Enter key password: ")
-        }
+        packageName 'com.daneel.pausab'
+        versionCode 4
+        versionName "1.2.1"
     }
 
     buildTypes {
         release {
-            runProguard true
+            runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             debuggable false
             packageNameSuffix 'PauSAB'
-            versionNameSuffix '1.0'
-            zipAlign true
-            signingConfig signingConfigs.release
+//            versionNameSuffix '1.1'
+            zipAlign false
         }
     }
 }
