@@ -30,7 +30,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             debuggable false
             packageNameSuffix 'PauSAB'
-//            versionNameSuffix '1.1'
             zipAlign false
         }
     }
