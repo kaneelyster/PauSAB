@@ -8,6 +8,6 @@ before_install:
 - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/master/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
 - source ~/.android-sdk-installer/env
 - export TERM=dumb
-before_script: cd PauSAB
+#before_script: cd PauSAB
 script: ./gradlew assembleDebug
 
