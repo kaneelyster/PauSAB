@@ -9,3 +9,4 @@ before_install:
 - export TERM=dumb
 before_script: cd PauSAB
 script: ./gradlew assembleDebug
+
