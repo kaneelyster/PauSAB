@@ -3,10 +3,10 @@ jdk: oraclejdk7
 before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq libstdc++6:i386 lib32z1
-#- export COMPONENTS=build-tools-19.0.3,android-18,sysimg-18,extra
+#- export COMPONENTS=build-tools-19.0.3,android-18,sysimg-18,extra-android-support
 - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/master/android-sdk-installer
-  | bash /dev/stdin --install=build-tools-19.0.3,android-18,sysimg-18,extra
+  | bash /dev/stdin --install=build-tools-19.0.3,android-18,sysimg-18,extra-android-support
 - source ~/.android-sdk-installer/env
 - export TERM=dumb
-before_script: cd PauSAB/PauSAB
+before_script: cd PauSAB
 script: ./gradlew assembleDebug
