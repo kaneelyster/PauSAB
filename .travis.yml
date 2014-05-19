@@ -1,4 +1,14 @@
-language: android
-android:
-  components:
-    - build-tools-19.0.2
+language: java
+jdk: oraclejdk7
+before_install:
+# Install base Android SDK
+- sudo apt-get update -qq
+- if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
+- export COMPONENTS=build-tools-19.0.3,android-19,sysimg-19,extra
+- curl -L https://raw.github.com/embarkmobile/android-sdk-installer/master/android-sdk-installer
+  | bash /dev/stdin --install=$COMPONENTS
+- source ~/.android-sdk-installer/env
+- export TERM=dumb
+before_script: cd PauSAB/PauSAB
+script: sudo ./gradlew assembleDebug
+
