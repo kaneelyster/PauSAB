@@ -3,4 +3,4 @@ PauSAB  [![Build Status](https://travis-ci.org/kaneelyster/PauSAB.svg?branch=mas
 
 Pause sabnzbd downloads directly from the notification bar.
 
-This is a work in progress with the intention of publishing on the Play Store in the near future.
+This is a work in progress, recently published on the Play Store.
