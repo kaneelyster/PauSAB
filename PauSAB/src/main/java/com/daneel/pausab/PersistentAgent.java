@@ -14,9 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,11 +61,10 @@ public class PersistentAgent extends Service {
         preferences = PreferencesStore.getInstance(getApplicationContext());
         ArrayList<String> statusText = new ArrayList<String>();
 
-        Bundle bundle = intent.getExtras();
         boolean connectivity = testConnectivity();
-        if (intent.getExtras() != null) {
-            if (bundle.getString("Pause") != null && connectivity){
-                String action = bundle.getString("Pause");
+        if (null != intent.getExtras()) {
+            if (intent.getStringExtra("Pause") != null && connectivity){
+                String action = intent.getStringExtra("Pause");
                 if (action != null && action.equals(ACTION_DURATION1)){
                     pauseDownloads(preferences.getDuration1());
                 }
@@ -79,9 +76,9 @@ public class PersistentAgent extends Service {
                 }
                 setRecurringAlarm(intent, 500);
             }
-            else if ("Start".equals(bundle.getString("Action"))
-                    || "StartSched".equals(bundle.getString("Action"))
-                    || ("StartConnChange".equals(bundle.getString("Action")) && preferences.getSERVICESTATUS() == 1)) {
+            else if ("Start".equals(intent.getStringExtra("Action"))
+                  || "StartSched".equals(intent.getStringExtra("Action"))
+                  || ("StartConnChange".equals(intent.getStringExtra("Action")) && preferences.getSERVICESTATUS() == 1)) {
                 preferences.setSERVICESTATUS(1);
                 if (connectivity){
                     refreshDownloadStatus status = new refreshDownloadStatus();
@@ -105,19 +102,14 @@ public class PersistentAgent extends Service {
                     setRecurringAlarm(intent);
                 }
             }
-//            else if (bundle.getString("Action").equals("Connectivity")) {
-//
-//            }
         }
         return Service.START_STICKY;
     }
 
     public void setRecurringAlarm(Intent intent) {
         Calendar cal = Calendar.getInstance();
-        //Intent alarmIntent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        //alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalMinutes()*60*1000, preferences.getRefreshIntervalMinutes()*60*1000, pintent);
         alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+preferences.getRefreshIntervalSeconds()*1000, preferences.getRefreshIntervalMinutes()*1000, pintent);
 
         preferences.incUpdateCount();
@@ -125,7 +117,6 @@ public class PersistentAgent extends Service {
 
     public void setRecurringAlarm(Intent intent, int delayMillis) {
         Calendar cal = Calendar.getInstance();
-        //Intent alarmIntent = new Intent(this, MyBroadcastReceiver.class);
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarm.setInexactRepeating(AlarmManager.RTC, cal.getTimeInMillis()+delayMillis, delayMillis, pintent);
@@ -141,12 +132,10 @@ public class PersistentAgent extends Service {
 
     @Override
     public void onCreate() {
-        //Toast.makeText(this, "Service was created", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
-        //Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
         clearNotification();
         clearRecurringAlarm();
         preferences.setSERVICESTATUS(0);
@@ -170,7 +159,7 @@ public class PersistentAgent extends Service {
 
     /** method for clients */
     public void pauseDownloads(int duration) {
-        String statusText="";
+        String statusText;
         DownloadPause status = new DownloadPause();
         try {
             statusText = status.execute(String.valueOf(duration)).get();
@@ -179,7 +168,6 @@ public class PersistentAgent extends Service {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, statusText, Toast.LENGTH_LONG).show();
     }
 
     public boolean testConnectivity(){
