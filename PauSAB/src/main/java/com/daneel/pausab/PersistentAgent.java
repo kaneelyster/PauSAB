@@ -62,7 +62,7 @@ public class PersistentAgent extends Service {
         ArrayList<String> statusText = new ArrayList<String>();
 
         boolean connectivity = testConnectivity();
-        if (null != intent.getExtras()) {
+        if (intent != null && intent.getExtras() != null) {
             if (intent.getStringExtra("Pause") != null && connectivity){
                 String action = intent.getStringExtra("Pause");
                 if (action != null && action.equals(ACTION_DURATION1)){
@@ -103,6 +103,33 @@ public class PersistentAgent extends Service {
                 }
             }
         }
+        else if (intent == null){
+            preferences.setSERVICESTATUS(1);
+            if (connectivity){
+                refreshDownloadStatus status = new refreshDownloadStatus();
+                try {
+                    statusText = status.execute(new String[]{""}).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                finally{
+                    statusText.add("Error");
+                    statusText.add("");
+                }
+                createNotification(statusText.get(0), statusText.get(1));
+            }
+            else{
+                clearNotification();
+            }
+            if (preferences.getSERVICESTATUS() == 1) {
+                Intent serviceIntent = new Intent(this, PersistentAgent.class);
+                serviceIntent.putExtra("Action", "StartSched");
+                setRecurringAlarm(serviceIntent);
+            }
+        }
+
         return Service.START_STICKY;
     }
 
